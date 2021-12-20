@@ -1,6 +1,6 @@
 // game: power play
 // an algorithm that checks when a player has won the game
-// we consider that a player wins when they has completed 4 cells.
+// we consider that a player wins when they have completed 4 cells.
 
 // We consider a grid designed as follows:
 // 0 is neutral
@@ -24,7 +24,7 @@ const grid = [
  * Checks whether the selected row is completed.
  * To win, the player must have 4 pieces in a row.
  * @param {int[]} row The row to check
- * @returns {{winner:string,won:boolean}}
+ * @returns {{winner?:string,won:boolean}}
  */
 function checkRow(row) {
   // if the row cannot make the player win (because it's too short)
@@ -33,9 +33,6 @@ function checkRow(row) {
   if (row.length <= 3) {
     return { won: false };
   }
-
-  let gray_winner = false;
-  let white_winner = false;
 
   const check = (type) => {
     let winner = false;
@@ -61,18 +58,15 @@ function checkRow(row) {
     return winner;
   };
 
-  gray_winner = check(1);
-  if (gray_winner) return { winner: "gray", won: true };
-
-  white_winner = check(2);
-  if (white_winner) return { winner: "white", won: true };
+  if (check(1)) return { winner: "gray", won: true };
+  if (check(2)) return { winner: "white", won: true };
 
   return { won: false };
 }
 
 /**
  * Called everytime a user plays
- * @returns {{winner:string,won:boolean}}
+ * @returns {{winner?:string,won:boolean}}
  */
 function checkWin() {
   const number_of_rows = grid.length; // 7
@@ -113,14 +107,14 @@ function checkWin() {
     // x will start at 2 etc.
     // therefore x is 0 + i
     // limited to the length of a row
-    for (let x = 0 + i; x < number_of_columns; x++) {
-      // we wanna take the element from top to bottom
+    for (let x = i; x < number_of_columns; x++) {
+      // we want to take the element from top to bottom
       // so element [y][x], [y+1][x+1], [y+2][x+2] etc.
       diagonal.push(grid[y][x]);
       // now we can start to go down
       y++;
     }
-    // We wanna check if the selected diagonal is already completed.
+    // We want to check if the selected diagonal is already completed.
     // This is great for performance because the program doesn't need to continue
     // if it has already met a completed line!
     // Besides, `checkRow` checks if the given row has more than 3 cells,
@@ -143,7 +137,7 @@ function checkWin() {
     // therefore, y starts at 1 + number of iterations.
     // In addition, y can go to `number_of_rows` because the grid might have a greater number of rows than columns
     for (let y = 1 + i; y < number_of_rows; y++) {
-      // we wanna take the element from top to bottom (in the diagonal)
+      // we want to take the element from top to bottom (in the diagonal)
       // so element [y][x], [y+1][x+1], [y+2][x+2] etc.
       diagonal.push(grid[y][x]);
       // now we can start to go down
@@ -171,7 +165,7 @@ function checkWin() {
     // and so on...
     // so at each iteration (`i`), x decreases by `i`
     for (let x = number_of_columns - 1 - i; x >= 0; x--) {
-      // we wanna take the element from top to bottom (top of the diagonal to bottom of the diagonal)
+      // we want to take the element from top to bottom (top of the diagonal to bottom of the diagonal)
       // so element [y][x], [y+1][x-1], [y+2][x-2] etc.
       diagonal.push(grid[y][x]);
       // now we can start to go down
@@ -183,7 +177,7 @@ function checkWin() {
     }
   }
 
-  // Finally the last half, so we read from the middle to the bottom right corner
+  // Finally, the last half, so we read from the middle to the bottom right corner
   // For this algorithm, we'll have `number_of_columns` diagonals (the length of a row), so we iterate this number of times
   for (let i = 0; i < number_of_columns; i++) {
     // each iteration will give a diagonal
@@ -195,7 +189,7 @@ function checkWin() {
     // therefore, y starts at 1 + number of iterations.
     // In addition, y can go to `number_of_rows` because the grid might have a greater number of rows than columns
     for (let y = 1 + i; y < number_of_rows; y++) {
-      // we wanna take the element from top to bottom (in the diagonal)
+      // we want to take the element from top to bottom (in the diagonal)
       // se element [y][x], [y+1][x-1], [y+2][x-2] etc.
       diagonal.push(grid[y][x]);
       // now we can start to go down
@@ -207,5 +201,5 @@ function checkWin() {
     }
   }
 
-  return false;
+  return {won: false};
 }
